@@ -40,6 +40,10 @@ db_cursor.execute("""
     )
 """)
 
+@app.route('/')
+def health_check():
+    return "App is running"
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signUp():
     if request.method == 'POST':
@@ -72,7 +76,7 @@ def signout():
     session.pop('user_id', None)
     return redirect(url_for('signin'))
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET'])
 def dashboard():
     if 'user_id' in session:
         user_id = session['user_id']
@@ -85,7 +89,6 @@ def dashboard():
         full_name = profile[0] if profile else ''
         email = profile[1] if profile else ''
 
-        # Fetch all user_data entries for display
         db_cursor.execute("SELECT users.username, user_data.full_name, user_data.email FROM user_data JOIN users ON user_data.user_id = users.id")
         all_profiles = db_cursor.fetchall()
 
@@ -97,20 +100,22 @@ def dashboard():
 def update_user_data():
     if 'user_id' in session:
         user_id = session['user_id']
-        full_name = request.form['full_name']
-        email = request.form['email']
+        full_name = request.form.get('full_name')
+        email = request.form.get('email')
 
-        db_cursor.execute("SELECT * FROM user_data WHERE user_id = %s", (user_id,))
-        existing = db_cursor.fetchone()
+        if full_name and email:
+            db_cursor.execute("SELECT * FROM user_data WHERE user_id = %s", (user_id,))
+            existing = db_cursor.fetchone()
 
-        if existing:
-            db_cursor.execute("UPDATE user_data SET full_name = %s, email = %s WHERE user_id = %s",
-                              (full_name, email, user_id))
-        else:
-            db_cursor.execute("INSERT INTO user_data (user_id, full_name, email) VALUES (%s, %s, %s)",
-                              (user_id, full_name, email))
+            if existing:
+                db_cursor.execute("UPDATE user_data SET full_name = %s, email = %s WHERE user_id = %s",
+                                  (full_name, email, user_id))
+            else:
+                db_cursor.execute("INSERT INTO user_data (user_id, full_name, email) VALUES (%s, %s, %s)",
+                                  (user_id, full_name, email))
 
-        db_connection.commit()
+            db_connection.commit()
+
         return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('signin'))
