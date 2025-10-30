@@ -20,7 +20,7 @@ app.secret_key = "your_secret_key"  # Replace with a secure key
 # )
 
 db_connection = psycopg2.connect(
-    host="flaskmpostgresserver3.postgres.database.azure.com",
+    host="flaskmpostgresserver4.postgres.database.azure.com",
     user="azureuser",
     password="YourSecurePassword123!",
     database="flaskdb",
