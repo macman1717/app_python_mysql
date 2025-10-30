@@ -1,4 +1,4 @@
-import mysql.connector
+import psycopg2
 # import boto3
 from flask import Flask, render_template, request, redirect, session, url_for
 
@@ -19,19 +19,20 @@ app.secret_key = "your_secret_key"  # Replace with a secure key
 #     database="test"
 # )
 
-db_connection = mysql.connector.connect(
-    host="flaskmysqlserver.mysql.database.azure.com",
-    user="azureuser@flaskmysqlserver",
+db_connection = psycopg2.connect(
+    host="flaskmpostgresserver2.postgres.database.azure.com",
+    user="azureuser",
     password="YourSecurePassword123!",
     database="flaskdb",
-    port=3306
+    port=5432,
+    sslmode="require"
 )
 db_cursor = db_connection.cursor()
 
 # Create users table
 db_cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
+        id INT PRIMARY KEY,
         username VARCHAR(255) NOT NULL,
         password VARCHAR(255) NOT NULL
     )
@@ -40,7 +41,7 @@ db_cursor.execute("""
 # Create user_data table
 db_cursor.execute("""
     CREATE TABLE IF NOT EXISTS user_data (
-        id INT AUTO_INCREMENT PRIMARY KEY,
+        id INT PRIMARY KEY,
         user_id INT NOT NULL,
         full_name VARCHAR(255),
         email VARCHAR(255),
