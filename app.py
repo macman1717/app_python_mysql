@@ -32,7 +32,7 @@ db_cursor = db_connection.cursor()
 # Create users table
 db_cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
-        id INT PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         username VARCHAR(255) NOT NULL,
         password VARCHAR(255) NOT NULL
     )
@@ -41,7 +41,7 @@ db_cursor.execute("""
 # Create user_data table
 db_cursor.execute("""
     CREATE TABLE IF NOT EXISTS user_data (
-        id INT PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         user_id INT NOT NULL,
         full_name VARCHAR(255),
         email VARCHAR(255),
