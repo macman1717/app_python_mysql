@@ -1,22 +1,30 @@
 import mysql.connector
-import boto3
+# import boto3
 from flask import Flask, render_template, request, redirect, session, url_for
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"  # Replace with a secure key
 
-# Retrieve MySQL password from AWS SSM
-ssm = boto3.client('ssm', region_name='us-east-1')
-parameter_name = "mysql_psw"
-response = ssm.get_parameter(Name=parameter_name, WithDecryption=True)
-mysql_password = response['Parameter']['Value']
+# # Retrieve MySQL password from AWS SSM
+# ssm = boto3.client('ssm', region_name='us-east-1')
+# parameter_name = "mysql_psw"
+# response = ssm.get_parameter(Name=parameter_name, WithDecryption=True)
+# mysql_password = response['Parameter']['Value']
 
 # Connect to MySQL
+# db_connection = mysql.connector.connect(
+#     host="database_endpoint",  # Replace with your DB endpoint
+#     user="admin",
+#     password=mysql_password,
+#     database="test"
+# )
+
 db_connection = mysql.connector.connect(
-    host="database_endpoint",  # Replace with your DB endpoint
-    user="admin",
-    password=mysql_password,
-    database="test"
+    host="flaskmysqlserver.mysql.database.azure.com",
+    user="azureuser@flaskmysqlserver",
+    password="YourSecurePassword123!",
+    database="flaskdb",
+    port=3306
 )
 db_cursor = db_connection.cursor()
 
